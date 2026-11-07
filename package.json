@@ -1,0 +1,22 @@
+{
+  "name": "voicecheck",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Talks to PlainSpeak, xScribe and xThera through a fake mic and reports what each app heard, said and showed.",
+  "type": "module",
+  "bin": { "voicecheck": "bin/voicecheck.mjs" },
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "check": "node bin/voicecheck.mjs",
+    "list": "node bin/voicecheck.mjs list",
+    "login": "node bin/voicecheck.mjs login",
+    "clips": "node scripts/make-clips.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.63.0"
+  },
+  "optionalDependencies": {
+    "@sparticuz/chromium": "^153.0.0"
+  }
+}

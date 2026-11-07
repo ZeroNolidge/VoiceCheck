@@ -1,0 +1,6 @@
+{
+  "hello": { "lang": "en", "text": "Hi, I am one of the doctors here. What brings you in today?" },
+  "explain": { "lang": "en", "text": "Your blood sugar is higher than it should be. That can hurt your eyes, kidneys and feet over time." },
+  "check": { "lang": "en", "text": "Can you tell me in your own words what you will do this week?" },
+  "empathy": { "lang": "en", "text": "That sounds really hard. I am glad you told me." }
+}
