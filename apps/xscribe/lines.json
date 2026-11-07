@@ -1,0 +1,7 @@
+{
+  "intro": { "lang": "en", "text": "This is our AI assistant Vera. She will ask you a few questions about your cough before I examine you." },
+  "cough": { "lang": "en", "text": "I have had a dry cough for about three days and it keeps me up at night." },
+  "cough-onset": { "lang": "en", "text": "It started on Monday after my son had a cold, and it is getting a little worse." },
+  "cough-meds": { "lang": "en", "text": "Honey and tea help a bit. I took some cough syrup last night." },
+  "es-cough": { "lang": "es", "text": "Tengo tos seca desde hace tres días y no me deja dormir." }
+}

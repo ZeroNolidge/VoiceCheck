@@ -1,0 +1,55 @@
+<!doctype html><meta charset="utf-8"><title>VoiceCheck fixture</title>
+<button id="listen">Listen</button>
+<button id="stop">Stop listening</button>
+<button id="clean">Speak clean</button>
+<button id="choppy">Speak choppy</button>
+<button id="media">Speak through audio tag</button>
+<button id="tts">Speak browser voice</button>
+<p id="out"></p>
+<script>
+const out = document.getElementById('out');
+let stream, ctx;
+document.getElementById('listen').onclick = async () => {
+  stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  ctx = new AudioContext();
+  const an = ctx.createAnalyser();
+  const src = ctx.createMediaStreamSource(stream);
+  src.connect(an);
+  // Like many apps: keep a processor running by wiring it to the speakers.
+  const proc = ctx.createScriptProcessor(1024, 1, 1);
+  src.connect(proc); proc.connect(ctx.destination);
+  let loud = 0;
+  const d = new Float32Array(an.fftSize);
+  setInterval(() => {
+    an.getFloatTimeDomainData(d);
+    const rms = Math.sqrt(d.reduce((a, x) => a + x * x, 0) / d.length);
+    if (rms > 0.02) loud += 50;
+    out.textContent = loud > 500 ? 'Heard you speak' : 'Listening';
+  }, 50);
+};
+document.getElementById('stop').onclick = () => stream.getTracks().forEach((t) => t.stop());
+function tone(seconds, gaps) {
+  const c = new AudioContext();
+  const n = Math.round(seconds * c.sampleRate);
+  const b = c.createBuffer(1, n, c.sampleRate);
+  const ch = b.getChannelData(0);
+  for (let i = 0; i < n; i++) {
+    const t = i / c.sampleRate;
+    const inGap = gaps && (t % 0.4) > 0.3; // 100 ms of nothing every 400 ms
+    ch[i] = inGap ? 0 : 0.3 * Math.sin(2 * Math.PI * 180 * t) * (0.6 + 0.4 * Math.sin(2 * Math.PI * 4 * t));
+  }
+  const s = c.createBufferSource(); s.buffer = b;
+  const g = c.createGain(); s.connect(g); g.connect(c.destination); s.start();
+}
+document.getElementById('clean').onclick = () => tone(3, false);
+document.getElementById('choppy').onclick = () => tone(3, true);
+document.getElementById('media').onclick = async () => {
+  const r = await fetch('/tone.wav'); const blob = await r.blob();
+  const a = new Audio(URL.createObjectURL(blob)); a.play();
+};
+document.getElementById('tts').onclick = () => {
+  const u = new SpeechSynthesisUtterance('Hello there, this is the browser voice speaking.');
+  u.onend = () => (out.textContent = 'Browser voice done');
+  speechSynthesis.speak(u);
+};
+</script>
